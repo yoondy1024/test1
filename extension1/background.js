@@ -1,13 +1,12 @@
 let timer = 0;
 let intervalId = null;
 
-chrome.action.onClicked.addListener((tab) => {
-  chrome.storage.sync.get(['timer'], function(result) {
-    const timeInSeconds = result.timer || 60; // 기본값은 1분
-
-    timer = timeInSeconds;
-    startCountdown(tab.id);
-  });
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.action === 'setTimer') {
+    timer = request.value;
+    startCountdown(sender.tab.id);
+    sendResponse({ status: 'success' });
+  }
 });
 
 function startCountdown(tabId) {
@@ -15,10 +14,10 @@ function startCountdown(tabId) {
     timer--;
 
     if (timer >= 0) {
-      chrome.action.setBadgeText({ text: timer.toString() });
+      chrome.action.setBadgeText({ text: timer.toString(), tabId: tabId });
     } else {
       clearInterval(intervalId);
-      chrome.action.setBadgeText({ text: '' });
+      chrome.action.setBadgeText({ text: '', tabId: tabId });
       chrome.tabs.remove(tabId);
     }
   }, 1000);

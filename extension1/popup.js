@@ -1,20 +1,22 @@
-document.addEventListener('DOMContentLoaded', function() {
+chrome.runtime.onInstalled.addListener(function() {
     const setTimerButton = document.getElementById('setTimer');
-    setTimerButton.addEventListener('click', function() {
-      setTimer();
-    });
+    if (setTimerButton) {
+      setTimerButton.addEventListener('click', function() {
+        setTimer();
+      });
+    }
   });
   
   function setTimer() {
     const minutes = document.getElementById('minutes').value;
     const timeInSeconds = minutes * 60;
   
-    chrome.storage.sync.set({ 'timer': timeInSeconds }, function() {
-      if (chrome.runtime.lastError) {
-        console.error(chrome.runtime.lastError);
-      } else {
+    chrome.runtime.sendMessage({ action: 'setTimer', value: timeInSeconds }, function(response) {
+      if (response && response.status === 'success') {
         console.log('Timer is set to ' + timeInSeconds + ' seconds');
         window.close();
+      } else {
+        console.error('Failed to set timer.');
       }
     });
   }
