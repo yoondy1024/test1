@@ -1,10 +1,11 @@
-// 탭이 열린 시간을 확인하여 설정한 시간이 지나면 탭을 닫음
-chrome.tabs.onCreated.addListener(function(tab) {
-    chrome.storage.sync.get(['closingTime'], function(result) {
-      const closingTime = result.closingTime || 5 * 60 * 1000; // 기본값은 5분
+chrome.tabs.onActivated.addListener(function(activeInfo) {
+    chrome.storage.sync.get(['timer'], function(result) {
+      const timer = result.timer || 1 * 60 * 1000; // 기본값은 1분
   
-      setTimeout(() => {
-        chrome.tabs.remove(tab.id);
-      }, closingTime);
+      setInterval(() => {
+        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+          chrome.tabs.remove(tabs[0].id);
+        });
+      }, timer);
     });
   });

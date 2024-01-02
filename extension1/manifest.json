@@ -1,15 +1,11 @@
 {
-    "manifest_version": 2,
-    "name": "Auto Close Tab",
+    "manifest_version": 3,
+    "name": "Timer Extension",
     "version": "1.0",
     "permissions": [
       "tabs"
     ],
-    "background": {
-      "scripts": ["background.js"],
-      "persistent": false
-    },
-    "browser_action": {
+    "action": {
       "default_popup": "popup.html",
       "default_icon": {
         "16": "images/icon16.png",
@@ -22,7 +18,7 @@
       "48": "images/icon48.png",
       "128": "images/icon128.png"
     },
-    "permissions": [
-      "tabs"
-    ]
+    "background": {
+      "service_worker": "background.js"
+    }
   }

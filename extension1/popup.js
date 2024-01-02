@@ -1,8 +1,9 @@
-function setClosingTime() {
-    const closingTimeInMinutes = document.getElementById('closingTime').value;
-    const closingTimeInMillis = closingTimeInMinutes * 60 * 1000;
+function setTimer() {
+    const minutes = document.getElementById('minutes').value;
+    const timeInMillis = minutes * 60 * 1000;
   
-    chrome.storage.sync.set({ closingTime: closingTimeInMillis }, function() {
-      console.log('Closing time is set to ' + closingTimeInMillis + ' milliseconds');
+    chrome.storage.sync.set({ timer: timeInMillis }, function() {
+      console.log('Timer is set to ' + timeInMillis + ' milliseconds');
+      window.close();
     });
   }
