@@ -1,15 +1,20 @@
-let timer = 0;
 let intervalId = null;
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.action === 'setTimer') {
-    timer = request.value;
-    startCountdown(sender.tab.id);
-    sendResponse({ status: 'success' });
-  }
+chrome.runtime.onInstalled.addListener(function() {
+  chrome.action.onClicked.addListener(function(tab) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      const minutes = prompt('분 단위 시간을 설정하세요:', '1');
+      if (minutes !== null && !isNaN(minutes)) {
+        const timeInSeconds = minutes * 60;
+        startCountdown(tabs[0].id, timeInSeconds);
+      }
+    });
+  });
 });
 
-function startCountdown(tabId) {
+function startCountdown(tabId, timeInSeconds) {
+  let timer = timeInSeconds;
+
   intervalId = setInterval(() => {
     timer--;
 
