@@ -1,3 +1,4 @@
+let timer = 0;
 let intervalId = null;
 
 chrome.action.onClicked.addListener(function(tab) {
@@ -11,7 +12,7 @@ chrome.action.onClicked.addListener(function(tab) {
 });
 
 function startCountdown(tabId, timeInSeconds) {
-  let timer = timeInSeconds;
+  timer = timeInSeconds;
 
   intervalId = setInterval(() => {
     timer--;
@@ -21,7 +22,10 @@ function startCountdown(tabId, timeInSeconds) {
     } else {
       clearInterval(intervalId);
       chrome.action.setBadgeText({ text: '', tabId: tabId });
-      chrome.tabs.remove(tabId);
+
+      chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+        chrome.tabs.remove(tabs[0].id);
+      });
     }
   }, 1000);
 }
